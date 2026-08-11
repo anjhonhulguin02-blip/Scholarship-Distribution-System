@@ -192,7 +192,7 @@
                     deliver transparent, secure, and efficient scholarship solutions.</p>
                 <div class="d-flex justify-content-start mt-4">
                     <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="https://github.com/MakMoinee/scholarshipDistributionWebApp" target="_blank" rel="noopener noreferrer" aria-label="Block Scholar source code on GitHub"><i class="fab fa-github"></i></a>
+                        style="width: 38px; height: 38px;" href="https://github.com/anjhonhulguin02-blip/Scholarship-Distribution-System" target="_blank" rel="noopener noreferrer" aria-label="Block Scholar source code on GitHub"><i class="fab fa-github"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-5">
@@ -215,7 +215,7 @@
                     <h4 class="fab fa-github text-primary"></h4>
                     <div class="pl-3">
                         <h5 class="text-white">Source Code</h5>
-                        <p><a class="text-white" href="https://github.com/MakMoinee/scholarshipDistributionWebApp" target="_blank" rel="noopener noreferrer">View on GitHub</a></p>
+                        <p><a class="text-white" href="https://github.com/anjhonhulguin02-blip/Scholarship-Distribution-System" target="_blank" rel="noopener noreferrer">View on GitHub</a></p>
                     </div>
                 </div>
             </div>

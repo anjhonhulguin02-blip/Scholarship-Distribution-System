@@ -12,7 +12,7 @@
             <h3 class="text-primary mb-4">Get In Touch</h3>
             <p><i class="fa fa-info-circle text-primary mr-2"></i>Academic Demonstration &mdash; Use Test Data Only</p>
             <p><i class="fa fa-envelope text-primary mr-2"></i><a class="text-white" href="mailto:anjhonhulguin7@gmail.com">anjhonhulguin7@gmail.com</a></p>
-            <p><i class="fab fa-github text-primary mr-2"></i><a class="text-white" href="https://github.com/MakMoinee/scholarshipDistributionWebApp" target="_blank" rel="noopener noreferrer">View Source on GitHub</a></p>
+            <p><i class="fab fa-github text-primary mr-2"></i><a class="text-white" href="https://github.com/anjhonhulguin02-blip/Scholarship-Distribution-System" target="_blank" rel="noopener noreferrer">View Source on GitHub</a></p>
         </div>
         <div class="col-lg-4 col-md-6 mb-5">
             <h3 class="text-primary mb-4">Quick Links</h3>
