@@ -35,6 +35,11 @@ class LoginController extends Controller
     public function store(Request $request)
     {
         if ($request->btnLogin) {
+            $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required', 'string'],
+            ]);
+
             $queryResult = json_decode(DB::table('users')->where('email', '=', $request->email)->get(), true);
             if (count($queryResult) > 0) {
                 $user = array();

@@ -6,6 +6,8 @@ use App\Models\Students;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserMyDetailsController extends Controller
 {
@@ -24,7 +26,7 @@ class UserMyDetailsController extends Controller
 
             $notifCount = DB::table('notifications')->where('userID', '=', $user['userID'])->where('status', '=', 'unread')->count();
 
-            $mDate =  date('Y-m-d', strtotime('-14 years'));
+            $mDate =  date('Y-m-d', strtotime('-18 years'));
             $student = json_decode(DB::table('students')->where('userID', "=", $user['userID'])->get(), true);
             if (count($student) > 0) {
                 $student = $student[0];
@@ -60,37 +62,34 @@ class UserMyDetailsController extends Controller
 
 
             if ($request->btnSaveDetails) {
+                $request->validate([
+                    'firstName' => ['required', 'string', 'max:100'],
+                    'lastName' => ['required', 'string', 'max:100'],
+                    'address' => ['required', 'string', 'max:180'],
+                    'birthDate' => ['required', 'date', 'before_or_equal:' . now()->subYears(18)->format('Y-m-d')],
+                    'gender' => ['required', 'in:male,female'],
+                    'profile' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:3072'],
+                    'grade' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:3072'],
+                ]);
+
+                // Profile photos and report-card/grade images are stored
+                // outside the public webroot with random filenames -- the
+                // old code saved them under public/profiles and
+                // public/grades using a guessable timestamp filename, which
+                // let anyone enumerate and download other students' photos
+                // and grades. SecureFileController is now the only reader.
                 $fileProfile = $request->file('profile');
                 $profileFileName = "";
                 if ($fileProfile) {
-                    $mimeType = $fileProfile->getMimeType();
-
-                    if ($mimeType == "image/png" || $mimeType == "image/jpg" || $mimeType == "image/JPG" || $mimeType == "image/JPEG" || $mimeType == "image/jpeg" || $mimeType == "image/PNG") {
-                        $destinationPath = $_SERVER['DOCUMENT_ROOT'] . '/profiles';
-                        $profileFileName = strtotime(now()) . "." . $fileProfile->getClientOriginalExtension();
-                        $isFile = $fileProfile->move($destinationPath,  $profileFileName);
-                        chmod($destinationPath, 0755);
-                    } else {
-                        session()->put("invalidProfile", true);
-                        return redirect("/user_details");
-                    }
+                    $profileFileName = Str::uuid() . '.' . strtolower($fileProfile->getClientOriginalExtension());
+                    Storage::disk('secure')->putFileAs('profiles', $fileProfile, $profileFileName);
                 }
 
                 $fileGrade = $request->file('grade');
                 $gradeFileName = "";
-
                 if ($fileGrade) {
-                    $gradeMimeType = $fileGrade->getMimeType();
-
-                    if ($gradeMimeType == "image/png" || $gradeMimeType == "image/jpg" || $gradeMimeType == "image/JPG" || $gradeMimeType == "image/JPEG" || $gradeMimeType == "image/jpeg" || $mimeType == "image/PNG") {
-                        $destinationPath = $_SERVER['DOCUMENT_ROOT'] . '/grades';
-                        $gradeFileName = strtotime(now()) . "." . $fileGrade->getClientOriginalExtension();
-                        $isFile = $fileGrade->move($destinationPath,  $gradeFileName);
-                        chmod($destinationPath, 0755);
-                    } else {
-                        session()->put("invalidGrade", true);
-                        return redirect("/user_details");
-                    }
+                    $gradeFileName = Str::uuid() . '.' . strtolower($fileGrade->getClientOriginalExtension());
+                    Storage::disk('secure')->putFileAs('grades', $fileGrade, $gradeFileName);
                 }
 
 
@@ -98,9 +97,18 @@ class UserMyDetailsController extends Controller
                 $count = DB::table('students')->where('userID', '=', $user['userID'])->count();
                 if ($count > 0) {
 
+                    // Only overwrite the stored profile/grade filename when a
+                    // new file was actually uploaded this request -- otherwise
+                    // an unrelated edit (e.g. updating an address) would wipe
+                    // out the student's previously uploaded photo/grade image.
+                    $fileUpdates = array_filter([
+                        'profile' => $profileFileName,
+                        'grade' => $gradeFileName,
+                    ], fn ($value) => $value !== "");
+
                     $updateCount = DB::table('students')
                         ->where('userID', $user['userID'])
-                        ->update([
+                        ->update(array_merge([
                             'first_name' => $request->firstName,
                             'middle_name' => $request->middleName,
                             'last_name' => $request->lastName,
@@ -124,9 +132,7 @@ class UserMyDetailsController extends Controller
                             'mother_contact_number' => $request->motherContactNumber,
                             'monthly_gross' => $request->monthlyGross,
                             'monthly_net' => $request->monthlyNet,
-                            'profile' => $profileFileName,
-                            'grade' => $gradeFileName,
-                        ]);
+                        ], $fileUpdates));
 
                     if ($updateCount > 0) {
                         session()->put("successUpdateDetails", true);

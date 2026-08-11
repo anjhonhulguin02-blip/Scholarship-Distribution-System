@@ -362,10 +362,16 @@ template {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-bottom: 0.5rem;
-  font-family: "Handlee", cursive;
+  font-family: "Nunito", sans-serif;
   font-weight: bold;
   line-height: 1.2;
   color: #00394f;
+}
+
+/* Restrained decorative accent -- used only for the "Block Scholar"
+   wordmark, not for every heading on the site. */
+.brand-script {
+  font-family: "Handlee", cursive;
 }
 
 h1, .h1 {

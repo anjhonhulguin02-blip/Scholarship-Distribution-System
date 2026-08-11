@@ -62,6 +62,15 @@ class OrgScholarshipsController extends Controller
             }
 
             if ($request->btnSaveScholarship) {
+                $request->validate([
+                    'orgName' => ['required', 'string', 'max:100'],
+                    'scholarshipName' => ['required', 'string', 'max:255'],
+                    'scholarshipAmount' => ['required', 'numeric', 'min:0'],
+                    'numberOfRespondents' => ['required', 'integer', 'min:1'],
+                    'requirements' => ['required', 'string'],
+                    'applicationDeadline' => ['nullable', 'date', 'after_or_equal:today'],
+                ]);
+
                 $count = DB::table('scholarships')->where('userID', '=', $user['userID'])->where('scholarshipName', '=', $request->scholarshipName)->where('orgName', '=', $request->orgName)->count();
                 if ($count > 0) {
                     session()->put("errorScholarExist", true);
@@ -73,6 +82,7 @@ class OrgScholarshipsController extends Controller
                     $newScholarship->scholarshipAmount = $request->scholarshipAmount;
                     $newScholarship->requirements = $request->requirements;
                     $newScholarship->numberOfRespondents = $request->numberOfRespondents;
+                    $newScholarship->applicationDeadline = $request->applicationDeadline ?: null;
                     $newScholarship->status = "active";
                     $isSave = $newScholarship->save();
                     if ($isSave) {

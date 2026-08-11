@@ -19,3 +19,7 @@ yarn-error.log
 /.vscode
 public/grades
 public/profiles
+
+# Applicant-uploaded files (requirement PDFs, profile photos, grade images).
+# Stored outside the public webroot; must never be committed regardless.
+/storage/app/secure

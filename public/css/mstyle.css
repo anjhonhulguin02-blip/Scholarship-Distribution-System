@@ -21,13 +21,13 @@ body{
   border-radius: 6px;
   box-shadow: 0 5px 10px rgba(0,0,0,0.2);
 }
-.wrapper h2{
+.wrapper h1{
   position: relative;
   font-size: 22px;
   font-weight: 600;
   color: #333;
 }
-.wrapper h2::before{
+.wrapper h1::before{
   content: '';
   position: absolute;
   left: 0;
@@ -36,6 +36,22 @@ body{
   width: 28px;
   border-radius: 12px;
   background: #17a2b8;
+}
+.sr-only{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.input-box input:focus-visible,
+.input-box.button input:focus-visible{
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
 }
 .wrapper form{
   margin-top: 30px;
@@ -81,15 +97,15 @@ form h3{
 .input-box.button input:hover{
   background: #0e4bf1;
 }
-form .text h3{
+form .text h2{
  color: #333;
  width: 100%;
  text-align: center;
 }
-form .text h3 a{
+form .text h2 a{
   color: #17a2b8;
   text-decoration: none;
 }
-form .text h3 a:hover{
+form .text h2 a:hover{
   text-decoration: underline;
 }

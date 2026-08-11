@@ -3,10 +3,10 @@
 
 <head>
     <meta charset="utf-8">
-    <title>BlockScholar</title>
+    <title>Organization Details &mdash; Block Scholar</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Manage your organization account details on Block Scholar.">
 
     <!-- Favicon -->
     <link href="/img/favicon.ico" rel="icon">
@@ -17,13 +17,6 @@
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Flaticon Font -->
-    <link href="/lib/flaticon/font/flaticon.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
@@ -57,7 +50,7 @@
         .h5,
         .h6 {
             margin-bottom: 0.5rem;
-            font-family: "Handlee", cursive;
+            font-family: "Nunito", sans-serif;
             font-weight: bold;
             line-height: 1.2;
             color: #000000;
@@ -77,8 +70,8 @@
     <!-- Navbar Start -->
     <div class="container-fluid bg-light position-relative shadow">
         <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0 px-lg-5">
-            <a href="" class="navbar-brand font-weight-bold text-secondary" style="font-size: 50px;">
-                <span class="text-primary">Block Scholar</span>
+            <a href="/" class="navbar-brand font-weight-bold text-secondary" style="font-size: 50px;">
+                <span class="text-primary brand-script">Block Scholar</span>
             </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
@@ -204,44 +197,38 @@
     <div class="container-fluid bg-dark text-white mt-5 py-5 px-sm-3 px-md-5">
         <div class="row pt-5">
             <div class="col-lg-3 col-md-6 mb-5">
-                <a href="" class="navbar-brand font-weight-bold text-primary m-0 mb-4 p-0"
+                <a href="/" class="navbar-brand font-weight-bold text-primary m-0 mb-4 p-0"
                     style="font-size: 40px; line-height: 40px;">
-                    <span class="text-white">Block Scholar</span>
+                    <span class="text-white brand-script">Block Scholar</span>
                 </a>
                 <p>Experience the future of education funding with Block Scholar—leveraging blockchain technology to
                     deliver transparent, secure, and efficient scholarship solutions.</p>
                 <div class="d-flex justify-content-start mt-4">
                     <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="#"><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="#"><i class="fab fa-instagram"></i></a>
+                        style="width: 38px; height: 38px;" href="https://github.com/MakMoinee/scholarshipDistributionWebApp" target="_blank" rel="noopener noreferrer" aria-label="Block Scholar source code on GitHub"><i class="fab fa-github"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-5">
                 <h3 class="text-primary mb-4">Get In Touch</h3>
                 <div class="d-flex">
-                    <h4 class="fa fa-map-marker-alt text-primary"></h4>
+                    <h4 class="fa fa-info-circle text-primary"></h4>
                     <div class="pl-3">
-                        <h5 class="text-white">Address</h5>
-                        <p>123 Street, New York, USA</p>
+                        <h5 class="text-white">Project Status</h5>
+                        <p>Academic Demonstration &mdash; Use Test Data Only</p>
                     </div>
                 </div>
                 <div class="d-flex">
                     <h4 class="fa fa-envelope text-primary"></h4>
                     <div class="pl-3">
-                        <h5 class="text-white">Email</h5>
-                        <p>info@example.com</p>
+                        <h5 class="text-white">Contact</h5>
+                        <p><a class="text-white" href="mailto:anjhonhulguin7@gmail.com">anjhonhulguin7@gmail.com</a></p>
                     </div>
                 </div>
                 <div class="d-flex">
-                    <h4 class="fa fa-phone-alt text-primary"></h4>
+                    <h4 class="fab fa-github text-primary"></h4>
                     <div class="pl-3">
-                        <h5 class="text-white">Phone</h5>
-                        <p>+012 345 67890</p>
+                        <h5 class="text-white">Source Code</h5>
+                        <p><a class="text-white" href="https://github.com/MakMoinee/scholarshipDistributionWebApp" target="_blank" rel="noopener noreferrer">View on GitHub</a></p>
                     </div>
                 </div>
             </div>
@@ -268,7 +255,7 @@
         </div>
         <div class="container-fluid pt-5" style="border-top: 1px solid rgba(23, 162, 184, .2);;">
             <p class="m-0 text-center text-white">
-                &copy; <a class="text-primary font-weight-bold" href="#">Block Scholar</a>. All Rights
+                &copy; <a class="text-primary font-weight-bold" href="/">Block Scholar</a>. All Rights
                 Reserved.
 
             </p>
@@ -280,42 +267,10 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-primary p-3 back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
-    <div class="modal fade " id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4>Create Your Account Now</h4>
-                </div>
-                <form action="/" method="post" autocomplete="off">
-                    @csrf
-                    <div class="modal-body">
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            style="color:white !important;">Close</button>
-                        <button type="submit" class="btn btn-warning" name="btnSignup" value="yes"
-                            style="color:white !important;">Proceed Creation</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="/lib/easing/easing.min.js"></script>
-    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="/lib/isotope/isotope.pkgd.min.js"></script>
-    <script src="/lib/lightbox/js/lightbox.min.js"></script>
-
-    <!-- Contact Javascript File -->
-    <script src="/mail/jqBootstrapValidation.min.js"></script>
-    <script src="/mail/contact.js"></script>
-
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>
     <script>

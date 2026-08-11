@@ -23,7 +23,7 @@ class OrgDetailsController extends Controller
 
             $notifCount = DB::table('notifications')->where('userID', '=', $user['userID'])->where('status', '=', 'unread')->count();
 
-            $mDate =  date('Y-m-d', strtotime('-14 years'));
+            $mDate =  date('Y-m-d', strtotime('-18 years'));
 
             return view('org.details', ['user' => $user, 'maxDate' => $mDate, 'notifCount' => $notifCount]);
         }

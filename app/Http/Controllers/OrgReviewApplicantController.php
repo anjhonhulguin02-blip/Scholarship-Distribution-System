@@ -33,15 +33,24 @@ class OrgReviewApplicantController extends Controller
 
             $id = $request->query('id');
             if ($id) {
+                // Scope the lookup to applications on scholarships this org
+                // owns (vwapplications.userID is the scholarship owner), so
+                // an org cannot view another org's applicants by guessing IDs.
+                $data = json_decode(DB::table('vwapplications')
+                    ->where('applicationID', '=', $id)
+                    ->where('userID', '=', $user['userID'])
+                    ->get(), true);
+
+                if (count($data) == 0) {
+                    abort(404);
+                }
+
                 $phpRate = $this->getEthToPhpRate();
                 $contractABI = config('contract.abi');
                 $contractAddress = env('CONTRACT_ADDRESS');
                 $rpcURL = env('LOCAL_RPC');
-                $privateKey = env('PRIVATE_KEY');
-    
-                $notifCount = DB::table('notifications')->where('userID', '=', $user['userID'])->where('status', '=', 'unread')->count();
 
-                $data = json_decode(DB::table('vwapplications')->where('applicationID', '=', $id)->get(), true);
+                $notifCount = DB::table('notifications')->where('userID', '=', $user['userID'])->where('status', '=', 'unread')->count();
 
                 return view('org.review', [
                     'data' => $data[0],
@@ -52,7 +61,6 @@ class OrgReviewApplicantController extends Controller
                     'userID' => $user['userID'],
                     'myBalance' => $myBalance,
                     'rpcURL' => $rpcURL,
-                    'privateKey' => $privateKey
                 ]);
             }
 

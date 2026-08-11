@@ -1,2 +1,14 @@
 User-agent: *
-Disallow:
+Allow: /$
+Allow: /scholarships
+Allow: /how-it-works
+Allow: /privacy
+Allow: /terms
+Disallow: /login
+Disallow: /register
+Disallow: /user_
+Disallow: /org_
+Disallow: /files/
+Disallow: /logout
+
+Sitemap: /sitemap.xml

@@ -103,6 +103,12 @@ class OrgTransactionController extends Controller
                     session()->put("errorCashin", true);
                 }
             } else if ($request->btnDisburse) {
+                $request->validate([
+                    'thash' => ['required', 'regex:/^0x[a-fA-F0-9]{64}$/'],
+                    'amount' => ['required', 'numeric', 'min:0'],
+                    'transID' => ['required', 'integer', 'exists:transactions,id'],
+                ]);
+
                 $myBalanceArr = json_decode(DB::table('balances')->where('userID', '=', $user['userID'])->get(), true);
                 $myBalance = $myBalanceArr[0]['amount'];
                 $myBalance = $myBalance - $request->amount;
@@ -110,10 +116,14 @@ class OrgTransactionController extends Controller
                     'amount' => $myBalance,
                 ]);
 
+                [$chainVerified, $chainNote] = $this->verifyOnChainReceipt($request->thash);
+
                 $updateCount = DB::table('transactions')->where('id', '=', $request->transID)->update([
                     "transactionHash" => $request->thash,
                     "amountReceived" => $request->amount,
-                    "status" => "disbursed"
+                    "status" => "disbursed",
+                    "chainVerified" => $chainVerified,
+                    "chainVerificationNote" => $chainNote,
                 ]);
                 if ($updateCount > 0) {
                     $newNotif = new Notifications();
@@ -181,5 +191,62 @@ class OrgTransactionController extends Controller
         }
 
         return null; // Handle API failure
+    }
+
+    /**
+     * The browser reports a transaction hash after sending funds via the
+     * org's own wallet, but the server previously recorded that hash and
+     * amount as-is with no independent check -- an org could mark a
+     * disbursement "disbursed" using a fabricated or unrelated hash, since
+     * nothing confirmed the transaction actually happened, succeeded, or
+     * involved this contract. This calls the RPC node's own
+     * eth_getTransactionReceipt so the recorded chainVerified status
+     * reflects reality rather than an unverified client claim. Verification
+     * failure (unreachable RPC, unmined tx, or a reverted call) does not
+     * block the disbursement -- the org's wallet already sent real funds --
+     * it only means the record is honestly flagged as unverified instead of
+     * silently trusted.
+     *
+     * @return array{0: bool, 1: string} [chainVerified, note]
+     */
+    private function verifyOnChainReceipt(string $txHash): array
+    {
+        $rpcURL = env('LOCAL_RPC');
+        $contractAddress = env('CONTRACT_ADDRESS');
+
+        if (!$rpcURL) {
+            return [false, 'Not verified: no blockchain RPC endpoint is configured for this environment.'];
+        }
+
+        try {
+            $response = Http::timeout(10)->post($rpcURL, [
+                'jsonrpc' => '2.0',
+                'id' => 1,
+                'method' => 'eth_getTransactionReceipt',
+                'params' => [$txHash],
+            ]);
+        } catch (\Throwable $e) {
+            return [false, 'Not verified: could not reach the RPC endpoint (' . $e->getMessage() . ').'];
+        }
+
+        if (!$response->successful()) {
+            return [false, 'Not verified: RPC endpoint returned an error response.'];
+        }
+
+        $receipt = $response->json('result');
+
+        if (!$receipt) {
+            return [false, 'Not verified: no transaction receipt found for this hash (not yet mined, or invalid).'];
+        }
+
+        if (($receipt['status'] ?? null) !== '0x1') {
+            return [false, 'Not verified: the on-chain transaction reverted or failed.'];
+        }
+
+        if ($contractAddress && strtolower($receipt['to'] ?? '') !== strtolower($contractAddress)) {
+            return [false, 'Not verified: transaction receipt does not target the configured scholarship contract.'];
+        }
+
+        return [true, 'Verified against the transaction receipt returned by the RPC endpoint at disbursement time.'];
     }
 }

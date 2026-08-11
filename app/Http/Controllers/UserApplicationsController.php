@@ -6,6 +6,8 @@ use App\Models\Applications;
 use App\Models\Notifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserApplicationsController extends Controller
 {
@@ -72,6 +74,13 @@ class UserApplicationsController extends Controller
             }
 
             if ($request->btnApplyScholarship) {
+                $request->validate([
+                    'scholarship' => ['required', 'integer', 'exists:scholarships,id'],
+                    'paymentAddress' => ['required', 'string', 'regex:/^0x[a-fA-F0-9]{40}$/'],
+                    'requirements' => ['required', 'file', 'mimes:pdf', 'max:5120'],
+                    'ownerID' => ['required', 'integer', 'exists:users,userID'],
+                ]);
+
                 $existCount = DB::table('applications')->where('userID', '=', $user['userID'])->where('scholarshipID', '=', $request->scholarship)->where('status', '=', 'active')->count();
                 if ($existCount > 0) {
                     session()->put("errorExistingApplication", true);
@@ -81,37 +90,32 @@ class UserApplicationsController extends Controller
                     $newApply->scholarshipID = $request->scholarship;
                     $newApply->paymentAddress = $request->paymentAddress;
 
-                    $files = $request->file('requirements');
-                    $fileName = "";
+                    $file = $request->file('requirements');
 
-                    if ($files) {
-                        $mimeType = $files->getMimeType();
-                        if ($mimeType == "application/pdf") {
-                            $destinationPath = $_SERVER['DOCUMENT_ROOT'] . '/storage/applications';
-                            $fileName = strtotime(now()) . "." . $files->getClientOriginalExtension();
-                            $isFile = $files->move($destinationPath,  $fileName);
-                            chmod($destinationPath, 0755);
+                    // Stored outside the public webroot with a random name:
+                    // the old code saved PDFs into public/storage/applications
+                    // under a guessable timestamp filename, so anyone could
+                    // enumerate and download other students' documents.
+                    // SecureFileController is now the only way to read these.
+                    $fileName = Str::uuid() . '.pdf';
+                    $isStored = Storage::disk('secure')->putFileAs('applications', $file, $fileName);
 
-                            if ($isFile) {
-                                $newApply->requirementFile = $fileName;
-                                $newApply->status = "active";
-                                $isSave = $newApply->save();
-                                if ($isSave) {
-                                    session()->put("successApply", true);
-                                    $newNotif = new Notifications();
-                                    $newNotif->userID = $request->ownerID;
-                                    $newNotif->message = "A Student Applies In One Of Your Scholarship Programs, Please Check Applications Page";
-                                    $newNotif->status = "unread";
-                                    $newNotif->save();
-                                } else {
-                                    session()->put("errorApply", true);
-                                }
-                            }
+                    if ($isStored) {
+                        $newApply->requirementFile = $fileName;
+                        $newApply->status = "active";
+                        $isSave = $newApply->save();
+                        if ($isSave) {
+                            session()->put("successApply", true);
+                            $newNotif = new Notifications();
+                            $newNotif->userID = $request->ownerID;
+                            $newNotif->message = "A Student Applies In One Of Your Scholarship Programs, Please Check Applications Page";
+                            $newNotif->status = "unread";
+                            $newNotif->save();
                         } else {
-                            session()->put("invalidFileFormat", true);
+                            session()->put("errorApply", true);
                         }
                     } else {
-                        session()->put("noFileAttached", true);
+                        session()->put("errorApply", true);
                     }
                 }
             }

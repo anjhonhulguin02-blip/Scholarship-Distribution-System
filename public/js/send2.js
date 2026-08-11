@@ -5,9 +5,9 @@ async function receiveFund(amount, ownerID, paymentAddress, rpcURL) {
         const provider = new ethers.JsonRpcProvider(rpcURL);
 
         try {
-            // Use the provider to create a signer for transaction sending
-            const signer = new ethers.Wallet(pk, provider);
-            // const signer = await provider.getSigner();
+            // Sign with the org's own connected wallet (MetaMask), never a
+            // private key held in server config or client-side code.
+            const signer = await provider.getSigner();
 
             // Connect to the smart contract
             const contract = new ethers.Contract(

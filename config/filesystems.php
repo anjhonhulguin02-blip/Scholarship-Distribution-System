@@ -44,6 +44,17 @@ return [
             'throw' => false,
         ],
 
+        // Applicant uploads (requirement PDFs, profile photos, grade images).
+        // Deliberately NOT under public/ or the public disk's symlink target
+        // -- these may contain student PII and must only be reachable via
+        // SecureFileController's ownership-checked routes.
+        'secure' => [
+            'driver' => 'local',
+            'root' => storage_path('app/secure'),
+            'visibility' => 'private',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

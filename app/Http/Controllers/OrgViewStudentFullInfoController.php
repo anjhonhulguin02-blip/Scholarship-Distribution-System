@@ -19,11 +19,28 @@ class OrgViewStudentFullInfoController extends Controller
 
             $id = $request->query('id');
             if ($id) {
-                $notifCount = DB::table('notifications')->where('userID', '=', $user['userID'])->where('status', '=', 'unread')->count();
-
                 $data = json_decode(DB::table('students')->where('id', '=', $id)->get(), true);
 
-                $mDate =  date('Y-m-d', strtotime('-14 years'));
+                if (count($data) == 0) {
+                    abort(404);
+                }
+
+                // A student's full profile (including grades/report card)
+                // may only be viewed by an org that student has actually
+                // applied to, never guessed by iterating student IDs.
+                $hasRelationship = DB::table('applications')
+                    ->join('scholarships', 'scholarships.id', '=', 'applications.scholarshipID')
+                    ->where('scholarships.userID', '=', $user['userID'])
+                    ->where('applications.userID', '=', $data[0]['userID'])
+                    ->exists();
+
+                if (!$hasRelationship) {
+                    abort(403);
+                }
+
+                $notifCount = DB::table('notifications')->where('userID', '=', $user['userID'])->where('status', '=', 'unread')->count();
+
+                $mDate =  date('Y-m-d', strtotime('-18 years'));
                 return view('org.studentinfo', [
                     'data' => count($data) == 0 ? [] : $data[0],
                     'maxDate' => $mDate,
